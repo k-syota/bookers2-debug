@@ -1,13 +1,21 @@
 <div class=" container">
 <div class="row">
+		<!-- エラーメッセージ表示-->
+	<% if @book_comment.errors.any? %>
+		<h3><%= @book_comment.errors.count %>error occurrence</h3><!--エラーメッセ-->
+		<ul>
+			<% @book_comment.errors.full_messages.each do |message| %>
+			<li><%= message %></li>
+			<% end %>
+		</ul>
+	<% end %>
+	<!-- エラーメッセージ表示-->
 	<div class="col-xs-3">
-
 		<h2>User info</h2>
 		<%= render 'users/profile', user: @user %>
 
 		<h2>New book</h2>
 		<%= render 'books/newform', book: @book %>
-
 	</div>
 
 	<div class="col-xs-9">
@@ -23,14 +31,46 @@
 					</td>
 					<td><%= link_to @find_book.title, book_path(@find_book) %></td>
 					<td><%= @find_book.body %></td>
-					<% if @find_book.user == current_user %>
-					<td><%= link_to "Edit",edit_book_path(@find_book), class: "btn-sm btn-success edit_book_#{@find_book.id}" %></td>
-					<td><%= link_to "Destroy",@find_book, method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
+
+                    <% if @find_book.favorited_by?(current_user) %>
+						<td>
+	                    <li><%= link_to book_favorites_path(@find_book), method: :delete do %>
+						  <i class="glyphicon glyphicon-heart" aria-hidden="true" style="color: red;"></i>
+						  <%= @find_book.favorites.count %>いいね<% end %>
+					    </li></td>
+                    <% else %>
+	                <td><li>
+	                    <% link_to controller: :favorites, action: :create, method: :post do %>
+	                      <i class="glyphicon glyphicon-heart" aria-hidden="true"></i>
+	                      <%= @find_book.favorites.count %> いいね <% end %>
+	                    </li></td>
+	                <% end %>
+                    <td>
+		                <%= @find_book.book_comment.count %>件コメント
+                    </td>
+						<% if @find_book.user == current_user %>
+						<td><%= link_to "Edit",edit_book_path(@find_book), class: "btn-sm btn-success edit_book_#{@find_book.id}" %></td>
+						<td><%= link_to "Destroy",@find_book, method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
 					<% end %>
 				</tr>
-			</table>
-
+		</table>
+        <%= form_for [@find_book, @book_comment] do |c| %>
+			<%= c.text_area :comment %>
+			<%= c.submit "送信する" %>
+        <% end %>
+        <table>
+        	<tbody>
+              <% @book_comments.each do |come| %>
+	        <tr><td>
+	          <%= come.comment %>
+	          <% end %></td>
+	          <td>
+	          <%= link_to book_book_comments_path(@find_book), method: :delete do %>
+	          <% end %></td>
+	        </tr>
+          </tbody>
+        </table>
+        コメント数:<%= @find_book.book_comment.count %>
 	</div>
 </div>
 </div>
-

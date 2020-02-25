@@ -8,5 +8,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable,:validatable
 
 	has_many :books, dependent: :destroy
+	has_many :favorites, dependent: :destroy
+  has_many :book_comment, dependent: :destroy
   attachment :profile_image, destroy: false
 end
