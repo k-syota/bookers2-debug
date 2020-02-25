@@ -1,10 +1,10 @@
 <div class=" container">
 <div class="row">
 		<!-- エラーメッセージ表示-->
-	<% if @book_comment.errors.any? %>
-		<h3><%= @book_comment.errors.count %>error occurrence</h3><!--エラーメッセ-->
+	<% if @comment.errors.any? %>
+		<h3><%= @comment.errors.count %>error occurrence</h3><!--エラーメッセ-->
 		<ul>
-			<% @book_comment.errors.full_messages.each do |message| %>
+			<% @comment.errors.full_messages.each do |message| %>
 			<li><%= message %></li>
 			<% end %>
 		</ul>
@@ -34,43 +34,42 @@
 
                     <% if @find_book.favorited_by?(current_user) %>
 						<td>
-	                    <li><%= link_to book_favorites_path(@find_book), method: :delete do %>
+	                    <li><%= link_to book_favorites_delete_path(@find_book), method: :delete do %>
 						  <i class="glyphicon glyphicon-heart" aria-hidden="true" style="color: red;"></i>
 						  <%= @find_book.favorites.count %>いいね<% end %>
 					    </li></td>
                     <% else %>
-	                <td><li>
-	                    <% link_to controller: :favorites, action: :create, method: :post do %>
+	                    <td><li>
+	                    <%= link_to book_favotites_create_path(@find_book), method: :post do %>
 	                      <i class="glyphicon glyphicon-heart" aria-hidden="true"></i>
 	                      <%= @find_book.favorites.count %> いいね <% end %>
 	                    </li></td>
 	                <% end %>
-                    <td>
-		                <%= @find_book.book_comment.count %>件コメント
-                    </td>
-						<% if @find_book.user == current_user %>
+                    <td>コメント数:<%= @find_book.book_comments.count %></td>
+					<% if @find_book.user == current_user %>
 						<td><%= link_to "Edit",edit_book_path(@find_book), class: "btn-sm btn-success edit_book_#{@find_book.id}" %></td>
 						<td><%= link_to "Destroy",@find_book, method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
 					<% end %>
 				</tr>
 		</table>
-        <%= form_for [@find_book, @book_comment] do |c| %>
+        <%= form_with(model: [@find_book, @comment], url: book_comments_create_path(@find_book)) do |c| %>
 			<%= c.text_area :comment %>
 			<%= c.submit "送信する" %>
         <% end %>
         <table>
         	<tbody>
-              <% @book_comments.each do |come| %>
+              <% @find_book.book_comments.each do |c| %>
 	        <tr><td>
-	          <%= come.comment %>
-	          <% end %></td>
-	          <td>
-	          <%= link_to book_book_comments_path(@find_book), method: :delete do %>
-	          <% end %></td>
+	          <%= c.comment %>
+	          </td>
+	          <td><%= link_to "削除", book_comments_delete_path(@find_book, c), {method: "delete"} %>
+	          <td><%# link_to "削除", book_comments_delete_path(@find_book.id), method: :delete %>
+	          <td><%# link_to "削除", "/book_comments/#{c.id}", method: :delete %>
+	          </td>
 	        </tr>
+	        <% end %>
           </tbody>
         </table>
-        コメント数:<%= @find_book.book_comment.count %>
 	</div>
 </div>
 </div>

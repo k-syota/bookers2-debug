@@ -4,7 +4,9 @@ class FavoritesController < ApplicationController
   favorite = current_user.favorites.find_by(book_id: find_book.id)
   # binding.pry
   favorite.destroy
-  redirect_to book_path(find_book.id)
+    redirect_back(fallback_location: root_path)
+  # if
+  # redirect_to book_path(find_book.id)
   end
 
   def create
@@ -12,7 +14,6 @@ class FavoritesController < ApplicationController
     # binding.pry
     favorite = current_user.favorites.new(book_id: find_book.id)
     favorite.save
-    redirect_to book_path(find_book.id)
+    redirect_back(fallback_location: root_path)
   end
-
 end

@@ -40,20 +40,20 @@
 
 						<% if book.favorited_by?(current_user) %>
 							<td>
-		                    <li><%= link_to book_favorites_path(book), method: :delete do %>
+		                    <li><%= link_to book_favorites_delete_path(book.id), method: :delete do %>
 							  <i class="glyphicon glyphicon-heart" aria-hidden="true" style="color: red;"></i>
 							  <%= book.favorites.count %>いいね<% end %>
 						    </li></td>
 	                    <% else %>
 		                    <td><li>
-		                    <%= link_to books_path(book.id), method: :post do %>
+		                    <%= link_to book_favotites_create_path(book.id), method: :post do %>
 		                      <i class="glyphicon glyphicon-heart" aria-hidden="true"></i>
 		                      <%= book.favorites.count %> いいね <% end %>
 		                    </li></td>
 		                <% end %>
 
 		                <td>
-		                <%= book.book_comment.count %>件コメント
+		                <%= book.book_comments.count %>件コメント
 		                </td>
 
 				</tr>
