@@ -1,0 +1,43 @@
+<div class=" container">
+  <div class="row">
+
+
+	    <h2>following users</h2>
+	    <table class="table table-hover table-inverse">
+	    	<thead>
+	    		<tr>
+	    			<th>image</th>
+	    			<th>name</th>
+	    		</tr>
+	    	</thead>
+	    	<% @following.each do |f| %>
+	    	<tbody>
+	    		<tr>
+	    			<td><%= attachment_image_tag(f, :profile_image, :fill, 50, 50, fallback: "no-image-mini.jpg") %>
+	                </td>
+	                <td><%= f.name %></td>
+	                <td>フォロー数:<%= f.followings.count %></td>
+	                <td>フォロワー数:<%= f.followers.count %></td>
+	                <td>
+						<% unless current_user == f %>
+						  <% if current_user.following?(f) %>
+						    <%= form_for(current_user.relationships.find_by(follow_id: f.id), html: { method: :delete }) do |f| %>
+						      <%= hidden_field_tag :follow_id, @user.id %>
+						      <%= f.submit 'Unfollow', class: 'btn btn-danger btn-block' %>
+						    <% end %>
+						  <% else %>
+						    <%= form_for(current_user.relationships.build) do |f| %>
+						      <%= hidden_field_tag :follow_id, @user.id %>
+						      <%= f.submit 'Follow', class: 'btn btn-primary btn-block' %>
+						    <% end %>
+						  <% end %>
+						<% end %>
+	                </td>
+	                <td><%= link_to "show", user_path(f.id) %></td>
+	    		</tr>
+	    	</tbody>
+	    	<% end %>
+	    </table>
+	</div>
+  </div>
+</div>
